@@ -38,8 +38,8 @@ A React application built with Vite, TypeScript, and Tailwind CSS to display dat
 1.  **Clone the repository:**
 
     ```bash
-    git clone <your-repository-url>
-    cd <repository-name>
+    git clone https://github.com/tripathi789308/dummy-json-app.git
+    cd dummy-json-app
     ```
 
 2.  **Install dependencies:**
