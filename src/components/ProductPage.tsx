@@ -125,7 +125,7 @@ const ProductsPage: React.FC = () => {
     <div className="container flex flex-col gap-1 mx-auto p-4 font-['Neutra Text']">
       <h1 className="text-2xl font-bold mb-4">Home/Products</h1>
 
-      <div className="flex flex-row gap-4 items-center justify-between mb-4">
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-4">
         <div className="flex flex-row gap-4 w-[45%] items-center">
           <PageSizeDropdown value={limit} onChange={handleLimitChange} />
           <SearchInput onSearch={handleSearch} />

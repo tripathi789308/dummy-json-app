@@ -152,7 +152,7 @@ const UsersPage: React.FC = () => {
     <div className="container mx-auto p-4 flex flex-col gap-1 font-['Neutra Text']">
       <h1 className="text-2xl font-bold mb-4">Home/Users</h1>
 
-      <div className="flex flex-row gap-4 items-center justify-between mb-4">
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-4">
         <div className="flex flex-row gap-4 w-[43%] items-center">
           <PageSizeDropdown value={limit} onChange={handleLimitChange} />
           <SearchInput onSearch={handleSearch} />
