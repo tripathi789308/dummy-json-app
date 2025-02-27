@@ -84,8 +84,19 @@ export const fetchProducts = createAsyncThunk(
         data: response.data.products,
         total: response.data.total,
       };
-    } catch (err) {
-      return rejectWithValue(`An error occurred - ${err}`);
+    } catch (error) {
+      let errorMessage = "An unexpected error occurred";
+
+      if (axios.isAxiosError(error)) {
+        errorMessage = `API Error: ${error.message}`;
+        if (error.response) {
+          errorMessage += ` (Status: ${error.response.status})`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = `Error: ${error.message}`;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   },
 );

@@ -66,7 +66,18 @@ export const fetchUsers = createAsyncThunk(
         total: response.data.total,
       };
     } catch (error) {
-      return rejectWithValue(`An error occurred - ${error}`);
+      let errorMessage = "An unexpected error occurred";
+
+      if (axios.isAxiosError(error)) {
+        errorMessage = `API Error: ${error.message}`;
+        if (error.response) {
+          errorMessage += ` (Status: ${error.response.status})`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = `Error: ${error.message}`;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -113,7 +124,18 @@ export const filterUsers = createAsyncThunk(
         total: response.data.total,
       };
     } catch (error) {
-      return rejectWithValue(`An error occurred - ${error}`);
+      let errorMessage = "An unexpected error occurred";
+
+      if (axios.isAxiosError(error)) {
+        errorMessage = `API Error: ${error.message}`;
+        if (error.response) {
+          errorMessage += ` (Status: ${error.response.status})`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = `Error: ${error.message}`;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   },
 );
