@@ -47,7 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-4 py-2  cursor-pointer text-gray-800 rounded-md mr-2 disabled:opacity-50"
+        className="px-4 py-2  cursor-pointer text-custom-black rounded-md mr-2 disabled:opacity-50"
       >
         <ArrowLeft />
       </button>
@@ -61,10 +61,10 @@ const Pagination: React.FC<PaginationProps> = ({
             }
           }}
           disabled={pageNumber === "..."}
-          className={`px-4 py-2 rounded-md ${
+          className={`px-4 py-2 ${
             currentPage === pageNumber
-              ? "text-black pb-[40px]"
-              : "text-gray-700"
+              ? "text-custom-black mb-[10px] bg-custom-blue rounded-full"
+              : "text-gray-700 rounded-md"
           } ${pageNumber === "..." ? "cursor-default" : "cursor-pointer"}`}
         >
           {pageNumber}
@@ -74,7 +74,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2  text-gray-800 cursor-pointer rounded-md ml-2 disabled:opacity-50"
+        className="px-4 py-2  text-custom-black cursor-pointer rounded-md ml-2 disabled:opacity-50"
       >
         <ArrowRight />
       </button>

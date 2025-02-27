@@ -16,30 +16,34 @@ interface DataTableProps {
 
 const DataTable: React.FC<DataTableProps> = ({ columns, data, loading }) => {
   return (
-    <div className="overflow-x-auto  h-[400px]">
+    <div
+      className={`${
+        loading ? "flex items-center" : ""
+      } overflow-x-auto  max-h-[400px] min-h-[400px]`}
+    >
       {loading ? (
         <Spinner />
       ) : (
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-[#c0e3e5]">
+        <table className="min-w-full divide-y divide-custom-black">
+          <thead className="bg-custom-blue">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.Header}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase"
+                  className="px-6 py-3 text-left text-xs font-bold text-custom-black uppercase"
                 >
                   {column.Header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-custom-black">
             {data.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-200">
+              <tr key={row.id} className="hover:bg-custom-gray">
                 {columns.map((column) => (
                   <td
                     key={`${row.id}-${column.accessor}`}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    className="px-6 py-4 whitespace-nowrap text-sm text-custom-black"
                   >
                     {(row as unknown as Record<string, string | number>)?.[
                       column.accessor

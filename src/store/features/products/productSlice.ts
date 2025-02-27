@@ -104,14 +104,17 @@ const productsSlice = createSlice({
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
-    setTitleFilter: (state, action: PayloadAction<string>) => {
-      state.titleFilter = action.payload;
-    },
     setCategoryFilter: (state, action: PayloadAction<string>) => {
       state.categoryFilter = action.payload;
+      state.page = 1;
+    },
+    setTitleFilter: (state, action: PayloadAction<string>) => {
+      state.titleFilter = action.payload;
+      state.page = 1;
     },
     setBrandFilter: (state, action: PayloadAction<string>) => {
       state.brandFilter = action.payload;
+      state.page = 1;
     },
     setActiveTab: (state, action: PayloadAction<"All" | "Laptops">) => {
       state.activeTab = action.payload;
@@ -120,8 +123,8 @@ const productsSlice = createSlice({
     },
     resetFilters: (state) => {
       state.categoryFilter = "";
-      state.brandFilter = "";
       state.titleFilter = "";
+      state.brandFilter = "";
     },
   },
   extraReducers: (builder) => {
@@ -149,8 +152,8 @@ export const {
   setPage,
   setLimit,
   setSearchQuery,
-  setCategoryFilter,
   setTitleFilter,
+  setCategoryFilter,
   setBrandFilter,
   setActiveTab,
   resetFilters,

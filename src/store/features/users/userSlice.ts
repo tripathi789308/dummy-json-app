@@ -48,6 +48,35 @@ export const fetchUsers = createAsyncThunk(
     {
       page,
       limit,
+    }: {
+      page: number;
+      limit: number;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const url = `https://dummyjson.com/users?limit=${limit}&skip=${
+        (page - 1) * limit
+      }`;
+
+      const response = await axios.get(url);
+
+      return {
+        data: response.data.users,
+        total: response.data.total,
+      };
+    } catch (error) {
+      return rejectWithValue(`An error occurred - ${error}`);
+    }
+  },
+);
+
+export const filterUsers = createAsyncThunk(
+  "users/filter",
+  async (
+    {
+      page,
+      limit,
       name,
       email,
       birthDate,
@@ -63,21 +92,18 @@ export const fetchUsers = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      let url = `https://dummyjson.com/users?limit=${limit}&skip=${
+      let url = `https://dummyjson.com/users/filter?limit=${limit}&skip=${
         (page - 1) * limit
       }`;
 
       if (name) {
-        url += `&firstName=${name}`;
-      }
-      if (email) {
-        url += `&email=${email}`;
-      }
-      if (birthDate) {
-        url += `&birthDate=${birthDate}`;
-      }
-      if (gender) {
-        url += `&gender=${gender}`;
+        url += `&key=firstName&value=${name}`;
+      } else if (email) {
+        url += `&key=email&value=${email}`;
+      } else if (birthDate) {
+        url += `&key=birthDate&value=${birthDate}`;
+      } else if (gender) {
+        url += `&key=gender&value=${gender}`;
       }
 
       const response = await axios.get(url);
@@ -108,17 +134,22 @@ const usersSlice = createSlice({
     },
     setNameFilter: (state, action: PayloadAction<string>) => {
       state.nameFilter = action.payload;
+      state.page = 1;
     },
     setEmailFilter: (state, action: PayloadAction<string>) => {
       state.emailFilter = action.payload;
+      state.page = 1;
     },
     setBirthDateFilter: (state, action: PayloadAction<string>) => {
       state.birthDateFilter = action.payload;
+      state.page = 1;
     },
     setGenderFilter: (state, action: PayloadAction<string>) => {
       state.genderFilter = action.payload;
+      state.page = 1;
     },
     resetFilters: (state) => {
+      console.log("reset filters");
       state.nameFilter = "";
       state.emailFilter = "";
       state.birthDateFilter = "";
@@ -140,6 +171,22 @@ const usersSlice = createSlice({
         },
       )
       .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(filterUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        filterUsers.fulfilled,
+        (state, action: PayloadAction<{ data: User[]; total: number }>) => {
+          state.loading = false;
+          state.data = action.payload.data;
+          state.total = action.payload.total;
+        },
+      )
+      .addCase(filterUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

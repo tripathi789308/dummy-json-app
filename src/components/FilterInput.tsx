@@ -44,7 +44,7 @@ const FilterInput: React.FC<FilterInputProps> = ({
       <div>
         <button
           type="button"
-          className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none"
+          className="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-custom-black hover:bg-custom-blue focus:outline-none"
           id="menu-button"
           aria-expanded="false"
           aria-haspopup="true"
@@ -57,7 +57,7 @@ const FilterInput: React.FC<FilterInputProps> = ({
 
       {isOpen && (
         <div
-          className="absolute mt-1 ml-[-60px] w-[250px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+          className="absolute mt-1 ml-[-60px] w-[250px] rounded-md shadow-lg bg-white ring-1 ring-custom-black ring-opacity-5 focus:outline-none z-10"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
@@ -69,7 +69,7 @@ const FilterInput: React.FC<FilterInputProps> = ({
               id={`${label}-input`}
               value={value}
               onChange={handleChange}
-              className="mt-1 ml-2 block w-11/12 border border-gray-300 rounded-md focus:border-blue-500 sm:text-sm px-2 py-1"
+              className="mt-1 ml-2 block w-11/12 border border-custom-blue rounded-mdq sm:text-sm px-2 py-1"
               placeholder={`Enter ${label} to filter`}
               autoFocus
             />
