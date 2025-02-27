@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchUsers,
@@ -10,6 +10,7 @@ import {
   setBirthDateFilter,
   setGenderFilter,
   resetFilters,
+  filterUsers,
 } from "../store/features/users/userSlice";
 import { RootState, AppDispatch } from "../store/store";
 import DataTable from "../components/DataTable";
@@ -17,6 +18,8 @@ import Pagination from "../components/Pagination";
 import PageSizeDropdown from "./PageSizeDropdown";
 import SearchInput from "./SearchInput";
 import FilterInput from "./FilterInput";
+import RemovableSpan from "./RemovableSpan";
+import { debounce } from "../utils/debounce";
 
 const UsersPage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -36,14 +39,11 @@ const UsersPage: React.FC = () => {
   const totalPages = Math.ceil(total / limit);
 
   useEffect(() => {
+    if (nameFilter || birthDateFilter || genderFilter || emailFilter) return;
     dispatch(
       fetchUsers({
         page,
         limit,
-        name: nameFilter,
-        email: emailFilter,
-        birthDate: birthDateFilter,
-        gender: genderFilter,
       }),
     );
   }, [
@@ -55,6 +55,32 @@ const UsersPage: React.FC = () => {
     birthDateFilter,
     genderFilter,
   ]);
+
+  useEffect(() => {
+    if (nameFilter || birthDateFilter || genderFilter || emailFilter)
+      debouncedFilterUsers();
+  }, [
+    dispatch,
+    page,
+    limit,
+    nameFilter,
+    emailFilter,
+    birthDateFilter,
+    genderFilter,
+  ]);
+  const handleFilterUsers = () => {
+    dispatch(
+      filterUsers({
+        page,
+        limit,
+        name: nameFilter,
+        email: emailFilter,
+        birthDate: birthDateFilter,
+        gender: genderFilter,
+      }),
+    );
+  };
+  const debouncedFilterUsers = debounce(handleFilterUsers, 500);
 
   const handlePageChange = (newPage: number) => {
     dispatch(setPage(newPage));
@@ -100,26 +126,40 @@ const UsersPage: React.FC = () => {
     { Header: "Eye Color", accessor: "eyeColor" },
   ];
 
-  const filteredData = searchQuery
-    ? data.filter((item) =>
-        Object.values(item).some((value) =>
-          String(value).toLowerCase().includes(searchQuery.toLowerCase()),
-        ),
-      )
-    : data;
+  const filterAdded = useMemo(() => {
+    return nameFilter.length > 0
+      ? nameFilter
+      : emailFilter.length > 0
+      ? emailFilter
+      : birthDateFilter.length > 0
+      ? birthDateFilter
+      : genderFilter.length > 0
+      ? genderFilter
+      : undefined;
+  }, [nameFilter, emailFilter, birthDateFilter, genderFilter]);
+
+  const filteredData = useMemo(() => {
+    return searchQuery
+      ? data.filter((item) =>
+          Object.values(item).some((value) =>
+            String(value).toLowerCase().includes(searchQuery.toLowerCase()),
+          ),
+        )
+      : data;
+  }, [searchQuery, data]);
 
   return (
-    <div className="container mx-auto p-4 font-['Neutra Text']">
+    <div className="container mx-auto p-4 flex flex-col gap-1 font-['Neutra Text']">
       <h1 className="text-2xl font-bold mb-4">Home/Users</h1>
 
       <div className="flex flex-row gap-4 items-center justify-between mb-4">
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row gap-4 w-[43%] items-center">
           <PageSizeDropdown value={limit} onChange={handleLimitChange} />
           <SearchInput onSearch={handleSearch} />
         </div>
-        <div className="flex flex-row gap-2 w-[55%] items-center">
+        <div className="flex flex-row gap-2 w-[57%] items-center">
           <FilterInput
-            label="Name"
+            label="First Name"
             value={nameFilter}
             onChange={handleNameFilterChange}
           />
@@ -141,17 +181,26 @@ const UsersPage: React.FC = () => {
         </div>
       </div>
 
+      {filterAdded && (
+        <div>
+          <RemovableSpan
+            text={`Filter: ${filterAdded}`}
+            onRemove={() => dispatch(resetFilters())}
+          />
+        </div>
+      )}
+
       {error ? (
         <p className="text-red-500">Error: {error}</p>
       ) : (
-        <>
+        <div>
           <DataTable columns={columns} data={filteredData} loading={loading} />
           <Pagination
             currentPage={page}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
-        </>
+        </div>
       )}
     </div>
   );

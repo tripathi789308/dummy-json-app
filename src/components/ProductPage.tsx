@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchProducts,
@@ -17,6 +17,8 @@ import Pagination from "./Pagination";
 import PageSizeDropdown from "./PageSizeDropdown";
 import SearchInput from "./SearchInput";
 import FilterInput from "./FilterInput";
+import RemovableSpan from "./RemovableSpan";
+import { debounce } from "../utils/debounce";
 
 const ProductsPage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -36,6 +38,16 @@ const ProductsPage: React.FC = () => {
   const totalPages = Math.ceil(total / limit);
 
   useEffect(() => {
+    if (
+      categoryFilter.length > 0 ||
+      titleFilter.length > 0 ||
+      brandFilter.length > 0
+    ) {
+      debouncedFilterProducts();
+    } else handleFilterProducts();
+  }, [dispatch, page, limit, categoryFilter, titleFilter, brandFilter]);
+
+  const handleFilterProducts = () => {
     dispatch(
       fetchProducts({
         page,
@@ -45,7 +57,9 @@ const ProductsPage: React.FC = () => {
         brand: brandFilter,
       }),
     );
-  }, [dispatch, page, limit, categoryFilter, titleFilter, brandFilter]);
+  };
+
+  const debouncedFilterProducts = debounce(handleFilterProducts, 500);
 
   const handlePageChange = (newPage: number) => {
     dispatch(setPage(newPage));
@@ -78,6 +92,16 @@ const ProductsPage: React.FC = () => {
     dispatch(setActiveTab(tab));
   };
 
+  const filterAdded = useMemo(() => {
+    return titleFilter.length > 0
+      ? titleFilter
+      : categoryFilter.length > 0
+      ? categoryFilter
+      : brandFilter.length > 0
+      ? brandFilter
+      : undefined;
+  }, [titleFilter, categoryFilter, brandFilter]);
+
   const columns = [
     { Header: "Title", accessor: "title" },
     { Header: "Price", accessor: "price" },
@@ -98,11 +122,11 @@ const ProductsPage: React.FC = () => {
     : data;
 
   return (
-    <div className="container mx-auto p-4 font-['Neutra Text']">
+    <div className="container flex flex-col gap-1 mx-auto p-4 font-['Neutra Text']">
       <h1 className="text-2xl font-bold mb-4">Home/Products</h1>
 
       <div className="flex flex-row gap-4 items-center justify-between mb-4">
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row gap-4 w-[45%] items-center">
           <PageSizeDropdown value={limit} onChange={handleLimitChange} />
           <SearchInput onSearch={handleSearch} />
         </div>
@@ -125,11 +149,27 @@ const ProductsPage: React.FC = () => {
         </div>
       </div>
 
+      <div>
+        {filterAdded && (
+          <div>
+            <RemovableSpan
+              text={`Filter: ${filterAdded}`}
+              onRemove={() => {
+                handleTabChange("All");
+                dispatch(resetFilters());
+              }}
+            />
+          </div>
+        )}
+      </div>
+
       <div className="flex space-x-4 mb-4">
         <button
           onClick={() => handleTabChange("All")}
           className={`px-4 py-2 rounded-md ${
-            activeTab === "All" ? "bg-[#c0e3e5] text-black" : "transparent"
+            activeTab === "All"
+              ? "bg-custom-blue text-custom-black"
+              : "transparent"
           }`}
         >
           ALL
@@ -137,7 +177,9 @@ const ProductsPage: React.FC = () => {
         <button
           onClick={() => handleTabChange("Laptops")}
           className={`px-4 py-2 rounded-md ${
-            activeTab === "Laptops" ? "bg-[#c0e3e5] text-black" : "transparent"
+            activeTab === "Laptops"
+              ? "bg-custom-blue text-custom-black"
+              : "transparent"
           }`}
         >
           Laptops
@@ -147,14 +189,14 @@ const ProductsPage: React.FC = () => {
       {error ? (
         <p className="text-red-500">Error: {error}</p>
       ) : (
-        <>
+        <div>
           <DataTable columns={columns} data={filteredData} loading={loading} />
           <Pagination
             currentPage={page}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
-        </>
+        </div>
       )}
     </div>
   );

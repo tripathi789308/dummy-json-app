@@ -5,8 +5,8 @@ import ProductsPage from "./pages/ProductPage";
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
-        <nav className="bg-[#c0e3e5] p-4 text-gray-800 sticky top-0 z-10">
+      <div className="min-h-screen bg-">
+        <nav className="bg-custom-blue p-4 text-custom-black sticky top-0 z-10">
           <ul className="flex space-x-6">
             <li>
               <Link
