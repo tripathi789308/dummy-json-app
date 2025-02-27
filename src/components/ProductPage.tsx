@@ -101,19 +101,35 @@ const ProductsPage: React.FC = () => {
     <div className="container mx-auto p-4 font-['Neutra Text']">
       <h1 className="text-2xl font-bold mb-4">Home/Products</h1>
 
-      <div className="flex items-center justify-between mb-4">
-        <PageSizeDropdown value={limit} onChange={handleLimitChange} />
+      <div className="flex flex-row gap-4 items-center justify-between mb-4">
+        <div className="flex flex-row gap-4 items-center">
+          <PageSizeDropdown value={limit} onChange={handleLimitChange} />
+          <SearchInput onSearch={handleSearch} />
+        </div>
+        <div className="flex flex-row gap-2 w-[55%] items-center">
+          <FilterInput
+            label="Title"
+            value={titleFilter}
+            onChange={handleTitleFilterChange}
+          />
+          <FilterInput
+            label="Category"
+            value={categoryFilter}
+            onChange={handleCategoryFilterChange}
+          />
+          <FilterInput
+            label="Brand"
+            value={brandFilter}
+            onChange={handleBrandFilterChange}
+          />
+        </div>
       </div>
-
-      <SearchInput onSearch={handleSearch} />
 
       <div className="flex space-x-4 mb-4">
         <button
           onClick={() => handleTabChange("All")}
           className={`px-4 py-2 rounded-md ${
-            activeTab === "All"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-100 text-gray-700"
+            activeTab === "All" ? "bg-[#c0e3e5] text-black" : "transparent"
           }`}
         >
           ALL
@@ -121,40 +137,18 @@ const ProductsPage: React.FC = () => {
         <button
           onClick={() => handleTabChange("Laptops")}
           className={`px-4 py-2 rounded-md ${
-            activeTab === "Laptops"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-100 text-gray-700"
+            activeTab === "Laptops" ? "bg-[#c0e3e5] text-black" : "transparent"
           }`}
         >
           Laptops
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <FilterInput
-          label="Title"
-          value={titleFilter}
-          onChange={handleTitleFilterChange}
-        />
-        <FilterInput
-          label="Category"
-          value={categoryFilter}
-          onChange={handleCategoryFilterChange}
-        />
-        <FilterInput
-          label="Brand"
-          value={brandFilter}
-          onChange={handleBrandFilterChange}
-        />
-      </div>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
+      {error ? (
         <p className="text-red-500">Error: {error}</p>
       ) : (
         <>
-          <DataTable columns={columns} data={filteredData} />
+          <DataTable columns={columns} data={filteredData} loading={loading} />
           <Pagination
             currentPage={page}
             totalPages={totalPages}

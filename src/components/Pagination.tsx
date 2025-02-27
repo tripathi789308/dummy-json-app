@@ -1,4 +1,6 @@
 import React from "react";
+import ArrowRight from "../icons/ArrowRight";
+import ArrowLeft from "../icons/ArrowLeft";
 
 interface PaginationProps {
   currentPage: number;
@@ -22,7 +24,7 @@ const Pagination: React.FC<PaginationProps> = ({
     if (currentPage > 1) {
       pages.push(currentPage - 1);
     }
-    pages.push(currentPage);
+    if (currentPage !== 0) pages.push(currentPage);
     if (currentPage < totalPages) {
       pages.push(currentPage + 1);
     }
@@ -31,7 +33,7 @@ const Pagination: React.FC<PaginationProps> = ({
       pages.push("...");
     }
 
-    if (pages[pages.length - 1] !== totalPages) {
+    if (totalPages > 0 && pages[pages.length - 1] !== totalPages) {
       pages.push(totalPages);
     }
 
@@ -45,9 +47,9 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2 disabled:opacity-50"
+        className="px-4 py-2  cursor-pointer text-gray-800 rounded-md mr-2 disabled:opacity-50"
       >
-        Previous
+        <ArrowLeft />
       </button>
 
       {pageNumbers.map((pageNumber, index) => (
@@ -61,9 +63,9 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={pageNumber === "..."}
           className={`px-4 py-2 rounded-md ${
             currentPage === pageNumber
-              ? "bg-blue-500 text-white"
-              : "bg-gray-100 text-gray-700"
-          } cursor-pointer ${pageNumber === "..." ? "cursor-default" : ""}`}
+              ? "text-black pb-[40px]"
+              : "text-gray-700"
+          } ${pageNumber === "..." ? "cursor-default" : "cursor-pointer"}`}
         >
           {pageNumber}
         </button>
@@ -72,9 +74,9 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md ml-2 disabled:opacity-50"
+        className="px-4 py-2  text-gray-800 cursor-pointer rounded-md ml-2 disabled:opacity-50"
       >
-        Next
+        <ArrowRight />
       </button>
     </div>
   );

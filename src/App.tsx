@@ -6,15 +6,21 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
-        <nav className="bg-blue-500 p-4 text-white sticky top-0 z-10">
-          <ul className="flex space-x-4">
+        <nav className="bg-[#c0e3e5] p-4 text-gray-800 sticky top-0 z-10">
+          <ul className="flex space-x-6">
             <li>
-              <Link to="/users" className="hover:text-blue-200">
+              <Link
+                to="/users"
+                className="hover:text-white hover:drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+              >
                 Users
               </Link>
             </li>
             <li>
-              <Link to="/products" className="hover:text-blue-200">
+              <Link
+                to="/products"
+                className="hover:text-white hover:drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+              >
                 Products
               </Link>
             </li>

@@ -112,42 +112,40 @@ const UsersPage: React.FC = () => {
     <div className="container mx-auto p-4 font-['Neutra Text']">
       <h1 className="text-2xl font-bold mb-4">Home/Users</h1>
 
-      <div className="flex items-center justify-between mb-4">
-        <PageSizeDropdown value={limit} onChange={handleLimitChange} />
+      <div className="flex flex-row gap-4 items-center justify-between mb-4">
+        <div className="flex flex-row gap-4 items-center">
+          <PageSizeDropdown value={limit} onChange={handleLimitChange} />
+          <SearchInput onSearch={handleSearch} />
+        </div>
+        <div className="flex flex-row gap-2 w-[55%] items-center">
+          <FilterInput
+            label="Name"
+            value={nameFilter}
+            onChange={handleNameFilterChange}
+          />
+          <FilterInput
+            label="Email"
+            value={emailFilter}
+            onChange={handleEmailFilterChange}
+          />
+          <FilterInput
+            label="Birth Date"
+            value={birthDateFilter}
+            onChange={handleBirthDateFilterChange}
+          />
+          <FilterInput
+            label="Gender"
+            value={genderFilter}
+            onChange={handleGenderFilterChange}
+          />
+        </div>
       </div>
 
-      <SearchInput onSearch={handleSearch} />
-
-      <div className="grid grid-cols-4 gap-4 mb-4">
-        <FilterInput
-          label="Name"
-          value={nameFilter}
-          onChange={handleNameFilterChange}
-        />
-        <FilterInput
-          label="Email"
-          value={emailFilter}
-          onChange={handleEmailFilterChange}
-        />
-        <FilterInput
-          label="Birth Date"
-          value={birthDateFilter}
-          onChange={handleBirthDateFilterChange}
-        />
-        <FilterInput
-          label="Gender"
-          value={genderFilter}
-          onChange={handleGenderFilterChange}
-        />
-      </div>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
+      {error ? (
         <p className="text-red-500">Error: {error}</p>
       ) : (
         <>
-          <DataTable columns={columns} data={filteredData} />
+          <DataTable columns={columns} data={filteredData} loading={loading} />
           <Pagination
             currentPage={page}
             totalPages={totalPages}

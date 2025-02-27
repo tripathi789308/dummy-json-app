@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 interface SearchInputProps {
   onSearch: (query: string) => void;
@@ -7,6 +8,7 @@ interface SearchInputProps {
 const SearchInput: React.FC<SearchInputProps> = ({ onSearch }) => {
   const [showInput, setShowInput] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null); // Ref for the input element
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
@@ -15,26 +17,52 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSearch }) => {
 
   const handleSearchClick = () => {
     setShowInput(true);
+    // Focus on the input element when it appears
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowInput(false);
+        setSearchValue(""); // Clear search value when closing
+        onSearch(""); // Clear search
+      }
+    };
+
+    if (showInput) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showInput, onSearch]);
+
   return (
-    <div className="flex items-center">
-      {!showInput ? (
-        <button
-          onClick={handleSearchClick}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          Search
-        </button>
-      ) : (
+    <div className="flex gap-4 items-center">
+      {showInput && (
         <input
+          ref={inputRef}
           type="text"
           placeholder="Enter search term..."
           value={searchValue}
           onChange={handleInputChange}
-          className="border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring focus:border-blue-500"
+          className="rounded-md py-1 px-2 focus:outline-none transparent ml-2 w-48"
         />
       )}
+      <button
+        onClick={handleSearchClick}
+        className="px-3 py-1.5  transparent rounded-md"
+      >
+        <MagnifyingGlassIcon className="h-5 w-5" />
+      </button>
     </div>
   );
 };
